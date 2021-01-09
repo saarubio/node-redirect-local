@@ -43,14 +43,35 @@ app.post('/', (req, res) => {
     GlobalSocket.on(request_id.toString(), (data) => {
         console.log('got my handshake for ',request_id);
         res.send(data);
-        res.sendStatus(200);
+        //res.sendStatus(200);
     }); // listen to the event
-    GlobalSocket.emit('new_request', {"request_id":request_id.toString()}); // emit an event to the socket
+    GlobalSocket.emit('new_request', {
+        "request_id":request_id.toString(),
+        body:JSON.stringify(req.body),
+        headers:JSON.stringify(req.headers),
+        cookies:JSON.stringify(req.cookies),
+        method:"post"
+    }); // emit an event to the socket
 });
 
 app.get('/', (req, res) => {
-    // console.log('Got body GET:', req.query);
-    res.sendStatus(200);
+ 
+    const request_id = new Date().getTime();
+    GlobalSocket.on(request_id.toString(), (data) => {
+        console.log('got my handshake for ',request_id);
+        res.send(data);
+    }); // listen to the event
+
+
+    GlobalSocket.emit('new_request', {
+        "request_id":request_id.toString(),
+        body:JSON.stringify(req.query),
+        headers:JSON.stringify(req.headers),
+        cookies:JSON.stringify(req.cookies),
+        method:"get"
+    }); // emit an event to the socket
+
+
 });
 
 

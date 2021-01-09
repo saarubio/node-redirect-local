@@ -9,7 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "https": "^1.0.0",
+    "needle": "^2.6.0",
     "requests": "^0.3.0",
-    "socket.io-client": "^3.0.4"
+    "socket.io-client": "^3.0.4",
+    "xhr": "^2.6.0"
   }
 }
