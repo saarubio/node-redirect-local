@@ -24,9 +24,9 @@ io.on('connection', socket => {
     // io.emit('broadcast', /* … */); // emit an event to all connected sockets
     // socket.on('reply', () => { /* … */ }); // listen to the event
 });
-
-console.log('Io Listening on 8082');
-IOserver.listen(8082);
+const IO_PORT = process.env.IO_PORT || 8082;
+console.log(`Io Listening on ${IO_PORT}`);
+IOserver.listen(IO_PORT);
 
 
 
@@ -95,7 +95,9 @@ app.get('/', (req, res) => {
 });
 
 
-app.listen(8080, () => console.log(`Started server at http://localhost:8080!`));
+app.listen(process.env.SERVER_PORT || 8080, () =>  {
+    console.log(`Started server at http://localhost:${process.env.SERVER_PORT || 8080}!`);
+});
 
 
 

@@ -5,7 +5,7 @@
  */
 const requests = require('requests');
 var needle = require('needle');
-const socket = require('socket.io-client')('http://localhost:8082');
+const socket = require('socket.io-client')(process.env.SOCKET_SERVER_URL || 'http://localhost:8082');
 socket.on('connect', function(){
     console.log("Connection Initiated");
 });
