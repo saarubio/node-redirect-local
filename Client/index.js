@@ -7,19 +7,16 @@ const requests = require('requests');
 var needle = require('needle');
 const socket = require('socket.io-client')('http://localhost:8082');
 socket.on('connect', function(){
-    console.log("Client connected");
+    console.log("Connection Initiated");
 });
 
 socket.on('new_request', function(data){
 
     console.log(data);
     const _this = this;
-    console.log('New request');
+    console.log('New incoming request');
     const request_id = data.request_id;
-    //console.log(request_id);
-    
-    //'https://app.workiz.com/api/Testn/test/'
-    
+
     const parseHeaders = () => {
 
         let headersParsed = {};
@@ -40,25 +37,33 @@ socket.on('new_request', function(data){
     {
         //needle.get(url[, options][, callback])
         needle.get(process.env.REDIRECT_URL, function(err, resp) {
-            _this.emit(request_id.toString(), resp.body);
+            _this.emit(request_id.toString(), {
+                cookies:resp.cookies,
+                body:resp.body,
+                headers:resp.headers
+            });
         });
     }
     else 
     {
       //needle.post(url, data[, options][, callback])
       const options = {
-        headers: parseHeaders()
+        headers: parseHeaders(),
+        cookies: data.cookies
       }
       
       needle.post(process.env.REDIRECT_URL, data.body, options, function(err, resp) {
-         _this.emit(request_id.toString(), resp.body);
+          
+         _this.emit(request_id.toString(), {
+             cookies:resp.cookies,
+             body:resp.body,
+             headers:resp.headers
+         });
       });
-
-
     }
 });
 
 
 socket.on('disconnect', function(){
-    console.log("adios");
+    console.log("Connection Terminated");
 });

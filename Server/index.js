@@ -41,10 +41,30 @@ app.post('/', (req, res) => {
     // console.log('Got body POST:', req.body);
     // console.log('ID:', request_id);
     GlobalSocket.on(request_id.toString(), (data) => {
+        
         console.log('got my handshake for ',request_id);
-        res.send(data);
+        console.log(data);
+        // transfer cookies - at the moment as session cookies - need to be solved or do global setting 
+        try 
+        {
+            for(const key in data.cookies)
+            {
+                res.cookie(key, data.cookies[key]);
+            }    
+        } 
+        catch (error) { /* do nothing */ }
+        try 
+        {
+            for(const key in data.header)
+            {
+                res.header(key, data.cookies[key]);
+            }    
+        }catch (error) { /* do nothing */ }
+
+        res.send(data.body);
         //res.sendStatus(200);
     }); // listen to the event
+    console.log(req.cookies);
     GlobalSocket.emit('new_request', {
         "request_id":request_id.toString(),
         body:JSON.stringify(req.body),
