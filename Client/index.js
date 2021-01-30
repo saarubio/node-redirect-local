@@ -18,9 +18,7 @@ socket.on('connect', function(){
 
 socket.on('new_request', function(data){
 
-    //console.log(data);
     const _this = this;
-    //console.log('New incoming request');
     const request_id = data.request_id;
 
     const parseHeaders = () => {
@@ -43,8 +41,7 @@ socket.on('new_request', function(data){
     {
         //needle.get(url[, options][, callback])
         needle.get(process.env.REDIRECT_URL, function(err, resp) {
-            //console.log(resp.headers);
-            console.log(resp.body);
+
             _this.emit(request_id.toString(), {
                 cookies:resp.cookies,
                 body:resp.body,
