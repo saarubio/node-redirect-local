@@ -5,6 +5,12 @@
  */
 const requests = require('requests');
 var needle = require('needle');
+needle.defaults({
+    user_agent: 'Client-Tunnel',
+    decode_response:false,
+    parse:false
+});
+
 const socket = require('socket.io-client')(process.env.SOCKET_SERVER_URL || 'http://localhost:8082');
 socket.on('connect', function(){
     console.log("Connection Initiated");
@@ -12,9 +18,9 @@ socket.on('connect', function(){
 
 socket.on('new_request', function(data){
 
-    console.log(data);
+    //console.log(data);
     const _this = this;
-    console.log('New incoming request');
+    //console.log('New incoming request');
     const request_id = data.request_id;
 
     const parseHeaders = () => {
@@ -37,6 +43,8 @@ socket.on('new_request', function(data){
     {
         //needle.get(url[, options][, callback])
         needle.get(process.env.REDIRECT_URL, function(err, resp) {
+            //console.log(resp.headers);
+            console.log(resp.body);
             _this.emit(request_id.toString(), {
                 cookies:resp.cookies,
                 body:resp.body,

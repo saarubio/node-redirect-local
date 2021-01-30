@@ -55,9 +55,9 @@ app.post('/', (req, res) => {
         catch (error) { /* do nothing */ }
         try 
         {
-            for(const key in data.header)
+            for(const key in data.headers)
             {
-                res.header(key, data.cookies[key]);
+                res.header(key, data.headers[key]);
             }    
         }catch (error) { /* do nothing */ }
 
@@ -78,8 +78,24 @@ app.get('/', (req, res) => {
  
     const request_id = new Date().getTime();
     GlobalSocket.on(request_id.toString(), (data) => {
-        console.log('got my handshake for ',request_id);
-        res.send(data);
+        console.log('got my handshake for non',request_id);
+        try 
+        {
+            for(const key in data.cookies)
+            {
+                res.cookie(key, data.cookies[key]);
+            }    
+        } 
+        catch (error) { /* do nothing */ }
+        try 
+        {
+            for(let key in data.headers)
+            {
+                console.log(key,data.headers[key]);
+                res.header(key, data.headers[key]);
+            }    
+        }catch (error) { /* do nothing */ }
+        res.send(data.body);
     }); // listen to the event
 
 
