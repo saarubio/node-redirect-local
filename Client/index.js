@@ -40,12 +40,12 @@ socket.on('new_request', function(data){
     if(data.method.toString().toLowerCase() == "get") 
     {
         //needle.get(url[, options][, callback])
-        needle.get(process.env.REDIRECT_URL, function(err, resp) {
+        needle.get(process.env.REDIRECT_URL + data.path, function(err, resp) {
 
             _this.emit(request_id.toString(), {
-                cookies:resp.cookies,
-                body:resp.body,
-                headers:resp.headers
+                cookies:resp.cookies || {},
+                body:resp.body || {},
+                headers:resp.headers || {}
             });
         });
     }
@@ -56,13 +56,13 @@ socket.on('new_request', function(data){
         headers: parseHeaders(),
         cookies: data.cookies
       }
-      
-      needle.post(process.env.REDIRECT_URL, data.body, options, function(err, resp) {
+      console.log(process.env.REDIRECT_URL + data.path);
+      needle.post(process.env.REDIRECT_URL + data.path, data.body, options, function(err, resp) {
           
          _this.emit(request_id.toString(), {
-             cookies:resp.cookies,
-             body:resp.body,
-             headers:resp.headers
+             cookies:resp.cookies || {},
+             body:resp.body || {},
+             headers:resp.headers || {}
          });
       });
     }

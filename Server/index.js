@@ -36,7 +36,7 @@ app.use(bodyParser.text());
 app.use(bodyParser.raw());
 app.use(forms.array()); 
 
-app.post('/', (req, res) => {
+app.post('*', (req, res) => {
     const request_id = new Date().getTime();
     GlobalSocket.on(request_id.toString(), (data) => {
         
@@ -63,6 +63,7 @@ app.post('/', (req, res) => {
     }); // listen to the event
     GlobalSocket.emit('new_request', {
         "request_id":request_id.toString(),
+        path:req.params[0] || "",
         body:JSON.stringify(req.body),
         headers:JSON.stringify(req.headers),
         cookies:JSON.stringify(req.cookies),
@@ -70,8 +71,8 @@ app.post('/', (req, res) => {
     }); // emit an event to the socket
 });
 
-app.get('/', (req, res) => {
- 
+app.get('*', (req, res) => {
+    
     const request_id = new Date().getTime();
     GlobalSocket.on(request_id.toString(), (data) => {
         console.log('got my handshake for non',request_id);
@@ -96,6 +97,7 @@ app.get('/', (req, res) => {
 
     GlobalSocket.emit('new_request', {
         "request_id":request_id.toString(),
+        path:req.params[0] || "",
         body:JSON.stringify(req.query),
         headers:JSON.stringify(req.headers),
         cookies:JSON.stringify(req.cookies),
