@@ -21,6 +21,9 @@ socket.on('new_request', function(data){
     const _this = this;
     const request_id = data.request_id;
 
+    const query_string = Object.keys(data.query).length > 0 ? "?" + new URLSearchParams(data.query).toString() : "";
+    const url = process.env.REDIRECT_URL + data.path + query_string;
+    console.log('url is ',url);
     const parseHeaders = () => {
 
         let headersParsed = {};
@@ -40,8 +43,8 @@ socket.on('new_request', function(data){
     if(data.method.toString().toLowerCase() == "get") 
     {
         //needle.get(url[, options][, callback])
-        needle.get(process.env.REDIRECT_URL + data.path, function(err, resp) {
-
+        needle.get(url, function(err, resp) {
+            console.log(resp.statusCode);
             _this.emit(request_id.toString(), {
                 cookies:resp.cookies || {},
                 body:resp.body || {},
@@ -56,9 +59,9 @@ socket.on('new_request', function(data){
         headers: parseHeaders(),
         cookies: data.cookies
       }
-      console.log(process.env.REDIRECT_URL + data.path);
-      needle.post(process.env.REDIRECT_URL + data.path, data.body, options, function(err, resp) {
-          
+      needle.post(url, data.body, options, function(err, resp) {
+         
+
          _this.emit(request_id.toString(), {
              cookies:resp.cookies || {},
              body:resp.body || {},
